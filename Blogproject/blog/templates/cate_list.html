@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title%} Blog Category {%endblock %}
+{% block content %}
+<div class="container align-items-center justify-content-start">
+<h1 style="font-family: Arial, Helvetica, sans-serif;"> Blog Categories</h1>
+<ul>
+{% for category in categorylist %}
+<li style="list-style-type: square;"><a href="{% url 'blog:category' category|slugify %}">
+     {{ category}}</a></li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}

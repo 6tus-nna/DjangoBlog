@@ -1,0 +1,28 @@
+{% extends 'base.html'%}
+{% block title%} {{cats}} category {% endblock %}
+
+{% block content %}
+<div class="container align-items-center justify-content-start">
+<h1>{{ cats }}</h1>
+{% if category_post %}
+<ul>
+    {% for post in category_post  %}
+    <li><a href="{% url 'blog:article-detail' post.pk %}">{{post.title}} </a> 
+    {{post.author.first_name}} {{ post.author.last_name }}  
+
+    {% if user.is_authenticated %}
+    <small>
+        - <a href="{% url 'blog:update_post' post.pk %}">[Edit]</a> 
+            <a href="{% url 'blog:delete-post' post.pk %}">[Delete]</a>
+        </small>
+
+    {% endif %}
+    <p class="date">Published : {{post.published}}</p><br>
+    {{post.body|slice:":200"|safe}}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p> sorry this page doesn't exist </p>
+{% endif %}
+</div>
+{% endblock %}

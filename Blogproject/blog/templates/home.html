@@ -1,0 +1,30 @@
+{% extends 'base.html'%}
+{% block title %} Posts{% endblock %}
+{% block content %}
+<div class="container align-items-center justify-content-start">
+<h1>Posts</h1>
+
+<ul>
+    {% for post in object_list %}
+    
+    <li style="list-style-type: square;"><a href="{% url 'blog:article-detail' post.pk %}">{{post.title}} </a> 
+    {{post.author.first_name}} {{ post.author.last_name }} -<a href="{% url 'blog:category' post.category|slugify %}">{{ post.category }} </a>
+    
+    
+    {% if user.is_authenticated %}
+    {% if user.id == post.author.id %}
+    <small>
+        - <a href="{% url 'blog:update_post' post.pk %}">[Edit]</a> 
+        -<a href="{% url 'blog:delete-post' post.pk %}">[Delete]</a>
+    
+        </small>
+        {%endif%}
+    {% endif %}
+    <p class="date">Published : {{post.published}} <br></p> 
+    {{post.snippet}}
+    </li>
+    {% endfor %}
+</ul>
+</div>
+
+{% endblock %}

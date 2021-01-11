@@ -1,0 +1,120 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block title %}{{post.title}}{% endblock %}
+{% block content %}
+
+<div class="container align-items-center justify-content-start">
+<h1>{{post.title}} {{post.author.id}}</h1>
+
+ By: {{post.author}} 
+    {% if user.is_authenticated %}
+        {% if user.id == post.author.id %}
+        - 
+        <small><a href="{% url 'blog:update_post' post.pk %}">Edit</a>
+            <a href="{% url 'blog:delete-post' post.pk %}">[Delete]</a><br></small>
+        <hr>
+        <br/>
+        {%endif%}
+    {% endif %}
+    <p><img src="{{post.header_image.url}}" width="300"></p>
+    {{post.body|safe}}
+    
+
+
+<br/><br/>
+<hr>
+     
+    <form action="{% url 'blog:like_post' post.pk %}" method="POST">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+            {% if Liked %}
+                <button type="submit" name="post_id" value
+                ="{{post.id}}" class="btn btn-danger  btn-sm"> Unlike</button>
+
+                - {{  total_likes }} likes
+            {% else%}
+                <button type="submit" name="post_id" value
+                ="{{post.id}}" class="btn btn-primary  btn-sm"> Like</button> 
+                
+                - {{  total_likes }} likes
+            {% endif%}
+        </form>
+        {%else%}
+             <a href="{% url 'login' %}">login </a> to like  - {{  total_likes }} likes
+        {%endif%}
+
+        
+        <br/>
+        <br/>
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+              {% if user.profile.profile_picture %}
+                <div class="col-md-4">
+                  <img src="{{user.profile.profile_picture.url}}" alt="..."  width="170" height="160" />
+                </div>
+              {% else %}
+                <div class="col-md-4">
+                  <img src="{% static 'blog/images/images.png' %}" alt="..." width="150" height="120"/>
+                </div>
+              {% endif %}
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title"><a href="{% url 'member:profile_detail' post.author.profile.id %}">{{post.author.first_name}}  {{post.author.last_name}}</a></h5>
+                  <p class="card-text"><small class="text-muted">
+                    <a href="{{post.author.profile.twitter_url}}"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                | <a href="{{post.author.profile.facebook_url}}"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+            |     <a href="{{post.author.profile.instagram_url }}"><i class="fa fa-instagram" aria-hidden="true"></i></a></small></p>
+                  <p class="card-text">{{post.author.profile.bio}}</p>
+                 
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+        <br/>
+        <hr>
+        <h2> Comments..</h2>
+        <br/>
+       
+        {% if not post.comments.all %}
+          <p> <a href="{% url 'blog:add_comment' post.pk %}"> Add comments </a></p>
+        {%else%}
+          <p> <a href="{% url 'blog:add_comment' post.pk %}"> Add comments </a></p>
+          {% for comment in post.comments.all %}
+            <b style="font-size: 15px;">
+                <p>{{comment.name}} - 
+                {{comment.date_added}}</p>
+              </b>
+            <p>{{comment.body}}</p>
+              
+            {% if comment.replies.all %}
+              
+              {% for reply in comment.replies.all %}
+                <small>
+                  <em>
+                  <b> 
+                    {{reply.name}} - 
+                    {{reply.date_added}}
+                  </b><br>
+                    <p>{{reply.body}}</p>
+                  </em>
+                </small>
+              {% endfor %}
+              <p> <a href="{% url 'blog:add_reply' comment.pk  %}"> reply <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+              </svg></a></p>
+            {%else%}
+                <p> <a href="{% url 'blog:add_reply' comment.pk %}"> reply <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+                </svg></a></p>
+              
+            {%endif%}
+          {% endfor %}
+          <br/>
+          <p> <a href="{% url 'blog:add_comment' post.pk %}"> Add comments </a></p>
+        {%endif%}
+        
+  </div>
+{% endblock %}
+
+

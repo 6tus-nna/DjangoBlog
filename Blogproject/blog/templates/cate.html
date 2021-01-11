@@ -1,0 +1,18 @@
+{% extends 'base.html'%}
+{% block title%}Create Category{% endblock %}
+{% block content %}
+<div class="container align-items-center justify-content-start">
+{% if user.is_authenticated %}
+    <h1> Add Category </h1>
+    <div class="form-group">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p}}
+        <button class="btn btn-secondary">Add<button>
+
+    </div>
+    {% else %}
+        <h1> You're not logged in!! </h1>
+    {% endif %}
+</div>
+{% endblock %}

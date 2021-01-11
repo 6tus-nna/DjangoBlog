@@ -1,0 +1,29 @@
+{% extends 'base.html'%}
+{% block title%}Create post {% endblock %}
+{% block content %}
+<div class="container align-items-center justify-content-start">
+{% if user.is_authenticated %}
+    <h1> Add Post </h1>
+    <div class="form-group">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media}}
+
+        {{ form.as_p}}
+        
+        <button class="btn btn-secondary">Post<button>
+
+    </div>
+
+    <script>
+        var name = "{{ user.id }}";
+        document.getElementById("elder").value
+            = name;
+    </script>
+    
+    
+    {% else %}
+        <h1> You're not logged in!! </h1>
+    {% endif %}
+</div>
+{% endblock %}
